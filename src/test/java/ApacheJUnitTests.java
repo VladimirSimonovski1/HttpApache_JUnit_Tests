@@ -1,5 +1,3 @@
-package WApacheJUnitTests;
-
 import assertions.TestAssertions;
 import client.Clients;
 import lombok.extern.java.Log;

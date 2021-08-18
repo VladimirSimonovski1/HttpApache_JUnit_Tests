@@ -1,7 +1,5 @@
 package assertions;
 
-import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.specification.ResponseSpecification;
 import lombok.extern.java.Log;
 import model.GetEmployeeResponseModel;
 import org.apache.http.HttpResponse;
@@ -43,19 +41,5 @@ public class TestAssertions {
         injuryEventResponseBodyCommon = JSONToObject(body, GetEmployeeResponseModel.class);
 
         return injuryEventResponseBodyCommon;
-    }
-
-    public static ResponseSpecification status200Ok() {
-        return new ResponseSpecBuilder()
-                .expectContentType("application/json;charset=utf-8")
-                .expectStatusCode(200)
-                .build();
-    }
-
-    public static ResponseSpecification status201Created() {
-        return new ResponseSpecBuilder()
-                .expectContentType("application/json")
-                .expectStatusCode(200)
-                .build();
     }
 }

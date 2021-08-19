@@ -1,27 +1,35 @@
 package client;
 
+import lombok.extern.java.Log;
 import org.apache.http.HttpResponse;
 
-import static config.Endpoints.CREATE_EMPLOYEE;
-import static config.Endpoints.DELETE_EMPLOYEE;
-import static config.Endpoints.GET_EMPLOYEES;
-import static config.Endpoints.UPDATE_EMPLOYEE;
+import static config.Endpoints.*;
 
+@Log
 public class Clients extends Base {
 
-    public HttpResponse getAllEmployees() throws Exception {
-        return httpGet(GET_EMPLOYEES);
+    public static HttpResponse getAllUsers() throws Exception {
+        log.info("GET USER REQUEST AGAINST: " + GET_USERS + " endpoint");
+        return httpGet(GET_USERS);
     }
 
-    public HttpResponse createEmployee(String payload) throws Exception {
-        return httpPost(CREATE_EMPLOYEE, payload);
+    public static HttpResponse getUser(String userId) throws Exception {
+        log.info("GET USER REQUEST AGAINST: " + GET_USER + " endpoint");
+        return httpGet(GET_USER + userId);
     }
 
-    public HttpResponse updateEmployee(String payload, int employee) throws Exception {
-        return httpPut(UPDATE_EMPLOYEE + employee, payload);
+    public static HttpResponse createUser(String payload) throws Exception {
+        log.info("CREATE USER REQUEST AGAINST " + CREATE_USER + " endpoint with payload: " + payload);
+        return httpPost(CREATE_USER, payload);
     }
 
-    public HttpResponse deleteEmployee(int employee) throws Exception {
-        return httpDelete(DELETE_EMPLOYEE + employee);
+    public static HttpResponse updateUser(int employee, String payload) throws Exception {
+        log.info("UPDATE USER REQUEST AGAINST: " + UPDATE_USER + employee + " endpoint with payload: " + payload);
+        return httpPut(UPDATE_USER + employee, payload);
+    }
+
+    public static HttpResponse deleteUser(int employee) throws Exception {
+        log.info("DELETE USER REQUEST AGAINST: " + DELETE_USER + employee + " endpoint");
+        return httpDelete(DELETE_USER + employee);
     }
 }

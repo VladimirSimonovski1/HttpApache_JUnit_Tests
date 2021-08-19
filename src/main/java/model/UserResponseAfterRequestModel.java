@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EmployeeData {
+public class UserResponseAfterRequestModel {
 
-    private int id;
-    private String employee_name;
-    private int employee_salary;
-    private int employee_age;
+    private String name;
+    private String job;
+    private String id;
+    private String createdAt;
+    private String updatedAt;
 }

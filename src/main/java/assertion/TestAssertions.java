@@ -65,7 +65,7 @@ public class TestAssertions {
     }
 
     public static void assertSuccessfulCreateUserResponse(HttpResponse response) throws IOException {
-        UserResponseAfterRequestModel userResponseAfterRequestBody = userResponseAfterRequestModel(response);
+        UserRequestModel userResponseAfterRequestBody = userResponseAfterRequestModel(response);
         log.info("RESPONSE BODY: " + objectToString(userResponseAfterRequestBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_CREATED));
@@ -78,7 +78,7 @@ public class TestAssertions {
     }
 
     public static void assertSuccessfulUpdateUserResponse(HttpResponse response) throws IOException {
-        UserResponseAfterRequestModel userResponseAfterRequestBody = userResponseAfterRequestModel(response);
+        UserRequestModel userResponseAfterRequestBody = userResponseAfterRequestModel(response);
         log.info("RESPONSE BODY: " + objectToString(userResponseAfterRequestBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_OK));
@@ -105,10 +105,10 @@ public class TestAssertions {
         return userResponseBody;
     }
 
-    private static UserResponseAfterRequestModel userResponseAfterRequestModel(HttpResponse response) throws IOException {
-        UserResponseAfterRequestModel userResponseAfterRequestModel;
+    private static UserRequestModel userResponseAfterRequestModel(HttpResponse response) throws IOException {
+        UserRequestModel userResponseAfterRequestModel;
         String body = EntityUtils.toString(response.getEntity());
-        userResponseAfterRequestModel = JSONToObject(body, UserResponseAfterRequestModel.class);
+        userResponseAfterRequestModel = JSONToObject(body, UserRequestModel.class);
 
         return userResponseAfterRequestModel;
     }

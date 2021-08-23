@@ -21,8 +21,9 @@ public abstract class Base {
     static HttpClient httpClient = HttpClients.custom().build();
     static Header contentType = new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json");
 
-    protected static HttpResponse httpGet(String endpoint) throws Exception {
+    protected static HttpResponse httpGet(String endpoint, String token) throws Exception {
         HttpGet request = new HttpGet(endpoint);
+        request.setHeader(new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token));
         HttpResponse response = httpClient.execute(request);
         getResponseEntity(response);
         return response;
@@ -37,17 +38,19 @@ public abstract class Base {
         return response;
     }
 
-    protected static HttpResponse httpPut(String endpoint, String jsonPayload) throws IOException {
+    protected static HttpResponse httpPut(String endpoint, String jsonPayload, String token) throws IOException {
         HttpPut request = new HttpPut(endpoint);
         request.setEntity(new StringEntity(jsonPayload));
         request.setHeader(contentType);
+        request.setHeader(new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token));
         HttpResponse response = httpClient.execute(request);
         getResponseEntity(response);
         return response;
     }
 
-    protected static HttpResponse httpDelete(String endpoint) throws IOException {
+    protected static HttpResponse httpDelete(String endpoint, String token) throws IOException {
         HttpDelete request = new HttpDelete(endpoint);
+        request.setHeader(new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token));
         return httpClient.execute(request);
     }
 

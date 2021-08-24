@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
@@ -59,5 +60,9 @@ public abstract class Base {
         String body = EntityUtils.toString(response.getEntity());
         HttpEntity newEntity = new StringEntity(body, ContentType.get(entity));
         response.setEntity(newEntity);
+    }
+
+    protected static URIBuilder endpointBuilder(String endpoint) throws java.net.URISyntaxException {
+        return new URIBuilder(endpoint);
     }
 }

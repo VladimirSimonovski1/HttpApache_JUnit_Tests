@@ -12,8 +12,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import util.UserDataProvider;
 
-import static assertion.TestAssertions.*;
-import static client.Clients.*;
+import static assertion.TestAssertions.assertFailedRegistrationResponse;
+import static assertion.TestAssertions.assertSuccessfulCreateUserResponse;
+import static assertion.TestAssertions.assertSuccessfulCreateUsersResponse;
+import static assertion.TestAssertions.assertSuccessfulGetUserResponse;
+import static assertion.TestAssertions.assertSuccessfulGetUsersPerIdResponse;
+import static assertion.TestAssertions.assertSuccessfulGetUsersResponse;
+import static assertion.TestAssertions.assertSuccessfulUpdateUserResponse;
+import static assertion.TestAssertions.assertUsersLength;
+import static client.Clients.createUser;
+import static client.Clients.deleteUser;
+import static client.Clients.getAllUsers;
+import static client.Clients.getUser;
+import static client.Clients.loginUser;
+import static client.Clients.register;
+import static client.Clients.updateUser;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -45,6 +58,7 @@ public class ApacheJUnitTests {
     public static void reportGenerated() {
         log.info("AN .XML REPORT SUCCESSFULLY GENERATED IN target/surefire-reports!");
         log.info("RUN allure serve target/surefire-reports TO GENERATE AN .HTML REPORT!");
+        
     }
 
     @Test

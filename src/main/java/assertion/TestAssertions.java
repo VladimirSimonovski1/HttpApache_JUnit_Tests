@@ -1,25 +1,32 @@
 package assertion;
 
 import lombok.extern.java.Log;
-import model.*;
+import model.ErrorRegistrationModel;
+import model.UserRequestModel;
+import model.UserResponseModel;
+import model.UsersResponseModel;
 import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
-import static org.apache.http.HttpStatus.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
-import static util.ObjectMapperConversion.JSONToObject;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static util.ObjectMapperConversion.objectToString;
 
 @Log
-public class TestAssertions {
+public class TestAssertions extends ModelToObject {
 
     public static void assertSuccessfulGetUsersResponse(HttpResponse response) throws IOException {
-        UsersResponseModel userResponseBody = getUsersResponseBody(response);
+        UsersResponseModel userResponseBody = getResponseBody(response, UsersResponseModel.class);
         log.info("RESPONSE BODY: " + objectToString(userResponseBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_OK));
@@ -44,7 +51,7 @@ public class TestAssertions {
     }
 
     public static void assertSuccessfulGetUserResponse(HttpResponse response) throws IOException {
-        UserResponseModel userResponseBody = getUserResponseBody(response);
+        UserResponseModel userResponseBody = getResponseBody(response, UserResponseModel.class);
         log.info("RESPONSE BODY: " + objectToString(userResponseBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_OK));
@@ -65,7 +72,7 @@ public class TestAssertions {
     }
 
     public static void assertSuccessfulCreateUserResponse(HttpResponse response) throws IOException {
-        UserRequestModel userResponseAfterRequestBody = userResponseAfterRequestModel(response);
+        UserRequestModel userResponseAfterRequestBody = getResponseBody(response, UserRequestModel.class);
         log.info("RESPONSE BODY: " + objectToString(userResponseAfterRequestBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_CREATED));
@@ -78,7 +85,7 @@ public class TestAssertions {
     }
 
     public static void assertSuccessfulUpdateUserResponse(HttpResponse response) throws IOException {
-        UserRequestModel userResponseAfterRequestBody = userResponseAfterRequestModel(response);
+        UserRequestModel userResponseAfterRequestBody = getResponseBody(response, UserRequestModel.class);
         log.info("RESPONSE BODY: " + objectToString(userResponseAfterRequestBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_OK));
@@ -90,7 +97,7 @@ public class TestAssertions {
     }
 
     public static void assertUsersLength(HttpResponse response) throws IOException {
-        UsersResponseModel userResponseBody = getUsersResponseBody(response);
+        UsersResponseModel userResponseBody = getResponseBody(response, UsersResponseModel.class);
         log.info("RESPONSE BODY: " + objectToString(userResponseBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_OK));
@@ -104,7 +111,7 @@ public class TestAssertions {
     }
 
     public static void assertSuccessfulGetUsersPerIdResponse(HttpResponse response, String email, String firstName, String lastName, String avatar) throws IOException {
-        UserResponseModel userResponseBody = getUserResponseBody(response);
+        UserResponseModel userResponseBody = getResponseBody(response, UserResponseModel.class);
         log.info("RESPONSE BODY: " + objectToString(userResponseBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_OK));
@@ -124,7 +131,7 @@ public class TestAssertions {
     }
 
     public static void assertSuccessfulCreateUsersResponse(HttpResponse response, String name, String job) throws IOException {
-        UserRequestModel userResponseAfterRequestBody = userResponseAfterRequestModel(response);
+        UserRequestModel userResponseAfterRequestBody = getResponseBody(response, UserRequestModel.class);
         log.info("RESPONSE BODY: " + objectToString(userResponseAfterRequestBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_CREATED));
@@ -135,44 +142,12 @@ public class TestAssertions {
     }
 
     public static void assertFailedRegistrationResponse(HttpResponse response, String error) throws IOException {
-        ErrorRegistrationModel errorResponseBody = errorResponseModel(response);
+        ErrorRegistrationModel errorResponseBody = getResponseBody(response, ErrorRegistrationModel.class);
         log.info("RESPONSE BODY: " + objectToString(errorResponseBody));
 
         assertThat(response.getStatusLine().getStatusCode(), equalTo(SC_BAD_REQUEST));
         assertThat(errorResponseBody, allOf(
                 hasProperty("error", is(equalTo(error)))
         ));
-    }
-
-    private static UsersResponseModel getUsersResponseBody(HttpResponse response) throws IOException {
-        UsersResponseModel usersResponseBody;
-        String body = EntityUtils.toString(response.getEntity());
-        usersResponseBody = JSONToObject(body, UsersResponseModel.class);
-
-        return usersResponseBody;
-    }
-
-    private static UserResponseModel getUserResponseBody(HttpResponse response) throws IOException {
-        UserResponseModel userResponseBody;
-        String body = EntityUtils.toString(response.getEntity());
-        userResponseBody = JSONToObject(body, UserResponseModel.class);
-
-        return userResponseBody;
-    }
-
-    private static UserRequestModel userResponseAfterRequestModel(HttpResponse response) throws IOException {
-        UserRequestModel userResponseAfterRequestModel;
-        String body = EntityUtils.toString(response.getEntity());
-        userResponseAfterRequestModel = JSONToObject(body, UserRequestModel.class);
-
-        return userResponseAfterRequestModel;
-    }
-
-    private static ErrorRegistrationModel errorResponseModel(HttpResponse response) throws IOException {
-        ErrorRegistrationModel errorRegistrationModel;
-        String body = EntityUtils.toString(response.getEntity());
-        errorRegistrationModel = JSONToObject(body, ErrorRegistrationModel.class);
-
-        return errorRegistrationModel;
     }
 }

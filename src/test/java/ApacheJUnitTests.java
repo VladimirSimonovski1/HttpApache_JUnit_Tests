@@ -1,8 +1,6 @@
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import lombok.extern.java.Log;
-import model.RegisterLoginRequestModel;
-import model.UserRequestModel;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
@@ -33,7 +31,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static payload.RegisterLoginRequestPayload.registerLoginRequestBody;
 import static payload.UserRequestPayload.userRequestBody;
-import static util.ObjectMapperConversion.objectToString;
 
 @Log @RunWith(DataProviderRunner.class)
 public class ApacheJUnitTests {
@@ -42,8 +39,7 @@ public class ApacheJUnitTests {
 
     @BeforeClass
     public static void login() throws Exception {
-        String createRegisterRequestBody = objectToString(registerLoginRequestBody);
-        HttpResponse loginResponse = loginUser(createRegisterRequestBody);
+        HttpResponse loginResponse = loginUser(registerLoginRequestBody());
         log.info("ACTUAL RESPONSE: " + loginResponse);
 
         String loginBodyToString = EntityUtils.toString(loginResponse.getEntity());
@@ -58,7 +54,6 @@ public class ApacheJUnitTests {
     public static void reportGenerated() {
         log.info("AN .XML REPORT SUCCESSFULLY GENERATED IN target/surefire-reports!");
         log.info("RUN allure serve target/surefire-reports TO GENERATE AN .HTML REPORT!");
-        
     }
 
     @Test
@@ -79,10 +74,9 @@ public class ApacheJUnitTests {
 
     @Test
     public void shouldCreateUser() throws Exception {
-        String createUserRequestBody = objectToString(userRequestBody);
-        log.info("REQUEST BODY: " + createUserRequestBody);
+        log.info("REQUEST BODY: " + userRequestBody());
 
-        HttpResponse actualResponse = createUser(createUserRequestBody);
+        HttpResponse actualResponse = createUser(userRequestBody());
         log.info("ACTUAL RESPONSE: " + actualResponse);
 
         assertSuccessfulCreateUserResponse(actualResponse);
@@ -90,10 +84,9 @@ public class ApacheJUnitTests {
 
     @Test
     public void shouldUpdateUser() throws Exception {
-        String updateUserRequestBody = objectToString(userRequestBody);
-        log.info("REQUEST BODY: " + updateUserRequestBody);
+        log.info("REQUEST BODY: " + userRequestBody());
 
-        HttpResponse actualResponse = updateUser(2, updateUserRequestBody, loginToken);
+        HttpResponse actualResponse = updateUser(2, userRequestBody(), loginToken);
         log.info("ACTUAL RESPONSE: " + actualResponse);
 
         assertSuccessfulUpdateUserResponse(actualResponse);
@@ -125,13 +118,7 @@ public class ApacheJUnitTests {
 
     @Test @UseDataProvider(value = "createUsersDataProvider", location = UserDataProvider.class)
     public void shouldCreateUsers(String name, String job) throws Exception {
-        UserRequestModel userRequestBody = UserRequestModel.builder()
-                .name(name)
-                .job(job)
-                .build();
-        String createUserRequestBody = objectToString(userRequestBody);
-
-        HttpResponse actualResponse = createUser(createUserRequestBody);
+        HttpResponse actualResponse = createUser(userRequestBody(name, job));
         log.info("ACTUAL RESPONSE: " + actualResponse);
 
         assertSuccessfulCreateUsersResponse(actualResponse, name, job);
@@ -139,13 +126,7 @@ public class ApacheJUnitTests {
 
     @Test @UseDataProvider(value = "createRegisterDataProvider", location = UserDataProvider.class)
     public void shouldFailRegistering(String email, String password, String error) throws Exception {
-        RegisterLoginRequestModel registerLoginRequestBody = RegisterLoginRequestModel.builder()
-                .email(email)
-                .password(password)
-                .build();
-        String createRegisterRequestBody = objectToString(registerLoginRequestBody);
-
-        HttpResponse actualResponse = register(createRegisterRequestBody);
+        HttpResponse actualResponse = register(registerLoginRequestBody(email, password));
         log.info("ACTUAL RESPONSE: " + actualResponse);
 
         assertFailedRegistrationResponse(actualResponse, error);

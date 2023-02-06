@@ -4,17 +4,17 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                sh 'mvn clean test'
             }
         }
         stage('Test') {
             steps {
-                echo 'Testing..'
+                sh 'mvn test -Dtest=ApacheJUnitTests'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                echo 'Reports generated'
             }
         }
     }

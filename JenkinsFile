@@ -2,17 +2,17 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Build & clean project') {
             steps {
                 sh 'mvn clean test'
             }
         }
-        stage('Test') {
+        stage('Executing API tests') {
             steps {
                 sh 'mvn test -Dtest=ApacheJUnitTests'
             }
         }
-        stage('Deploy') {
+        stage('Generating reports') {
             steps {
                 echo 'Reports generated'
             }

@@ -1,6 +1,9 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import lombok.extern.java.Log;
+import model.UsersResponseModel;
+import model.submodel.UserDataModel;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
@@ -10,6 +13,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import util.UserDataProvider;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static assertion.ModelToObject.getResponseBody;
 import static assertion.TestAssertions.assertFailedRegistrationResponse;
 import static assertion.TestAssertions.assertSuccessfulCreateUserResponse;
 import static assertion.TestAssertions.assertSuccessfulCreateUsersResponse;
@@ -31,6 +38,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static payload.RegisterLoginRequestPayload.registerLoginRequestBody;
 import static payload.UserRequestPayload.userRequestBody;
+import static util.ObjectMapperConversion.objectToString;
 
 @Log @RunWith(DataProviderRunner.class)
 public class ApacheJUnitTests {
@@ -130,5 +138,37 @@ public class ApacheJUnitTests {
         log.info("ACTUAL RESPONSE: " + actualResponse);
 
         assertFailedRegistrationResponse(actualResponse, error);
+    }
+
+    @Test
+    public void shouldGetAllUsersUsingStream() throws Exception {
+        HttpResponse actualResponse = getAllUsers("1", loginToken);
+        log.info("ACTUAL RESPONSE: " + actualResponse);
+        UsersResponseModel userResponseBody = getResponseBody(actualResponse, UsersResponseModel.class);
+
+        userResponseBody.getData().stream().map(item -> {
+            if(item.getId() == 3) {
+                try {
+                    log.info("STREAMED LIST: " + objectToString(item));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                return item;
+            } else {
+                return null;
+            }
+        });
+        List<UserDataModel> udm1 =
+                userResponseBody.getData().stream().filter(item -> item.getFirst_name().startsWith("T")).collect(Collectors.toList());
+        log.info("FILTERED LIST: " + objectToString(udm1));
+        userResponseBody.getData().forEach(item -> {
+            if(item.getAvatar().contains("2-image")) {
+                try {
+                    log.info("JANET: " + objectToString(item));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

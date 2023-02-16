@@ -9,7 +9,7 @@ import static util.ObjectMapperConversion.JSONToObject;
 
 public abstract class ModelToObject {
 
-    protected static <T> T getResponseBody(HttpResponse response, Class clazz) throws IOException {
+    public static <T> T getResponseBody(HttpResponse response, Class clazz) throws IOException {
         String body = EntityUtils.toString(response.getEntity());
         return JSONToObject(body, clazz);
     }
